@@ -83,16 +83,108 @@ void MergeSort(string l[], const int &size)
 	}
 }
 
-int HoarePartition(string arr[], const int& size)
+int HoarePartition(string arr[], int left, int right)
 {
-	string p = arr[0];
-	int i = 0;
+	int size = right - left;
+	string p = arr[left];
+	int i = left;
+	int j = right + 1;
+	do {
+		do {
+			i++;
+		} while (arr[i] >= p);
+		do {
+			j--;
+		} while (arr[j] <= p);
+	} while (i >= j);
+	string temp;
+	swap(arr[i], arr[j]);
+	/*/
+	temp = arr[i];
+	arr[i] = arr[j];
+	arr[j] = temp;
+	*/
+	swap(arr[0], arr[j]);
+	/*
+	temp = arr[0];
+	arr[0] = arr[j];
+	arr[j] = temp;
+	*/
+	return j;
 
 }
 
-void QuickSort()
+int partition(string arr[], int left , int right)
 {
+	string pivot = arr[left];
+	int i = left+1, j = right;
+	/*
+	while (i <= j) {
+		while (arr[i] < pivot)
+			i++;
+		while (arr[j] > pivot)
+			j--;
+		if (i <= j) {
+			swap(arr[i], arr[j]);
+			i++; j--;
+		}
+	};
 
+	//recursion 
+	//if (left < j)
+	//	quickSort(str, left, j);
+	//if (i < right)
+	//	quickSort(str, i, right);
+	*/
+	while (i <= j)
+	{
+		while (arr[i] < pivot)
+		{
+			i++;
+		}
+		while (arr[j] > pivot)
+		{
+			j--;
+		}
+		swap(arr[i], arr[j]);
+	}
+	swap(arr[i], arr[j]);
+	swap(arr[left], arr[j]);
+	
+	return j;
+
+}
+
+void QuickSort(string arr[], int left, int right)
+{
+	if (left < right)
+	{
+		//int s = partition(arr, left, right);
+		string pivot = arr[left];
+		int i = left + 1, j = right;
+		while (i <= j) {
+			while (arr[i] < pivot)
+				i++;
+			while (arr[j] > pivot)
+				j--;
+			if (i <= j) {
+				swap(arr[i], arr[j]);
+				i++; j--;
+			}
+		}
+		int s = j;
+		//swap(arr[i], arr[j]);
+		string arrLeft = arr[left];
+		string arrJ = arr[j];
+		cout << "left: " << left << "  right: " << right << endl;
+		cout << "i: " << i << "  arr[i]: " << arr[i] << "   j: " << j << "  arr[j]: "  << arr[j] << endl;
+		swap(arr[left], arr[j]);
+
+		cout << "Quicksort(arr, " << left << ", " << s - 1 << ")" << endl;
+		QuickSort(arr, left, s - 1);
+		cout << "Quicksort(arr, " << s+1 << ", " << right << ")" <<  endl;
+		QuickSort(arr, s+1, right);
+	}
 }
 int main()
 {
@@ -116,6 +208,8 @@ int main()
 		{
 			lineCount++;
 		}
+		inFile.clear();                 // clear fail and eof bits
+		inFile.seekg(0, ios::beg); // back to the start!
 		inFile.close();
 	}
 
@@ -127,14 +221,15 @@ int main()
 		int count = 0;
 		while (getline(inFile, line))
 		{
-			list[count++] = line;
+			list[count] = line;
+			count++;
 		}
 		inFile.close();
 	}
 
 	//sort array here.
-	MergeSort(list, lineCount);
-
+	//MergeSort(list, lineCount);
+	QuickSort(list, 0,lineCount-1);
 	//print out to file.
 	ofstream outFile;
 	outFile.open(outFileName);
